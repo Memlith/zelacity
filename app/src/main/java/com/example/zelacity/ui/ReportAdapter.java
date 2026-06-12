@@ -50,6 +50,22 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         }
         holder.textViewLocation.setText(locationInfo);
         
+        // Report Status (Resolvida, Em andamento, Aguardando)
+        String status = currentReport.getStatus();
+        if (status == null) status = context.getString(R.string.status_waiting);
+        holder.textViewReportStatus.setText(status);
+        
+        int statusColor;
+        if (status.equals(context.getString(R.string.status_resolved))) {
+            statusColor = ContextCompat.getColor(context, R.color.color_resolved);
+        } else if (status.equals(context.getString(R.string.status_in_progress))) {
+            statusColor = ContextCompat.getColor(context, R.color.color_in_progress);
+        } else {
+            statusColor = ContextCompat.getColor(context, R.color.color_waiting);
+        }
+        holder.textViewReportStatus.setTextColor(statusColor);
+
+        // Sync Status (Sincronizado, Pendente)
         if (currentReport.isSynced()) {
             holder.textViewStatus.setText(R.string.status_synced);
             holder.textViewStatus.setTextColor(ContextCompat.getColor(context, R.color.synced));
@@ -77,6 +93,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         private final TextView textViewDescription;
         private final TextView textViewLocation;
         private final TextView textViewStatus;
+        private final TextView textViewReportStatus;
         private final TextView textViewTimestamp;
 
         public ReportViewHolder(@NonNull View itemView) {
@@ -85,6 +102,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
             textViewDescription = itemView.findViewById(R.id.textViewDescription);
             textViewLocation = itemView.findViewById(R.id.textViewLocation);
             textViewStatus = itemView.findViewById(R.id.textViewStatus);
+            textViewReportStatus = itemView.findViewById(R.id.textViewReportStatus);
             textViewTimestamp = itemView.findViewById(R.id.textViewTimestamp);
         }
     }

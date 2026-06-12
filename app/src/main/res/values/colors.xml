@@ -10,6 +10,9 @@
     <color name="pending">#F44336</color>
     <color name="synced">#4CAF50</color>
     <color name="secondary">#689F38</color>
+    <color name="color_waiting">#FFC107</color>
+    <color name="color_in_progress">#2196F3</color>
+    <color name="color_resolved">#4CAF50</color>
     <color name="primary_light">#A5D6A7</color>
     <color name="on_primary_dark">#002105</color>
 </resources>

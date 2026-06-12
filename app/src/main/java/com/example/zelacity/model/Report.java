@@ -16,11 +16,12 @@ public class Report {
     private long timestamp;
     private String userId;
     private boolean isSynced;
+    private String status; // "Aguardando", "Em andamento", "Resolvida"
 
     public Report() {}
 
     @Ignore
-    public Report(String title, String description, double latitude, double longitude, String address, long timestamp, String userId) {
+    public Report(String title, String description, double latitude, double longitude, String address, long timestamp, String userId, String status) {
         this.title = title;
         this.description = description;
         this.latitude = latitude;
@@ -29,6 +30,7 @@ public class Report {
         this.timestamp = timestamp;
         this.userId = userId;
         this.isSynced = false;
+        this.status = status;
     }
 
     // Getters and Setters
@@ -50,4 +52,6 @@ public class Report {
     public void setUserId(String userId) { this.userId = userId; }
     public boolean isSynced() { return isSynced; }
     public void setSynced(boolean synced) { isSynced = synced; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

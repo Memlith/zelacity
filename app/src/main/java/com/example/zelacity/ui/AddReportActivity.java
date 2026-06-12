@@ -101,7 +101,7 @@ public class AddReportActivity extends AppCompatActivity {
         String description = editTextDescription.getText().toString().trim();
         String manualAddress = editTextAddress.getText().toString().trim();
 
-        if (title.isEmpty() || description.isEmpty()) {
+        if (title.isEmpty()) {
             Toast.makeText(this, R.string.toast_fill_fields, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -115,7 +115,8 @@ public class AddReportActivity extends AppCompatActivity {
         }
 
         String userId = FirebaseAuth.getInstance().getUid();
-        Report report = new Report(title, description, latitude, longitude, finalAddress, System.currentTimeMillis(), userId);
+        String defaultStatus = getString(R.string.status_waiting);
+        Report report = new Report(title, description, latitude, longitude, finalAddress, System.currentTimeMillis(), userId, defaultStatus);
         viewModel.insert(report);
         
         Toast.makeText(this, R.string.toast_success, Toast.LENGTH_SHORT).show();
