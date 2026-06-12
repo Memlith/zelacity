@@ -2,6 +2,8 @@ package com.example.zelacity.ui;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +24,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 public class AddReportActivity extends AppCompatActivity {
@@ -31,6 +35,7 @@ public class AddReportActivity extends AppCompatActivity {
     private ReportViewModel viewModel;
     private FusedLocationProviderClient fusedLocationClient;
     private double latitude = 0.0, longitude = 0.0;
+    private String autoAddress = "";
     private boolean hasLocation = false;
 
     @Override
@@ -65,6 +70,18 @@ public class AddReportActivity extends AppCompatActivity {
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
                 hasLocation = true;
+
+                // Tenta obter o endereço automaticamente via Geocoder
+                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                try {
+                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                    if (addresses != null && !addresses.isEmpty()) {
+                        autoAddress = addresses.get(0).getAddressLine(0);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 textViewLocationStatus.setText(getString(R.string.location_gps_success, latitude, longitude));
                 textInputLayoutAddress.setVisibility(View.GONE);
             } else {
@@ -82,20 +99,23 @@ public class AddReportActivity extends AppCompatActivity {
     private void saveReport() {
         String title = editTextTitle.getText().toString().trim();
         String description = editTextDescription.getText().toString().trim();
-        String address = editTextAddress.getText().toString().trim();
+        String manualAddress = editTextAddress.getText().toString().trim();
 
         if (title.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, R.string.toast_fill_fields, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!hasLocation && address.isEmpty()) {
+        // Se o endereço manual estiver vazio, usa o capturado automaticamente
+        String finalAddress = manualAddress.isEmpty() ? autoAddress : manualAddress;
+
+        if (!hasLocation && finalAddress.isEmpty()) {
             Toast.makeText(this, R.string.toast_missing_location, Toast.LENGTH_SHORT).show();
             return;
         }
 
         String userId = FirebaseAuth.getInstance().getUid();
-        Report report = new Report(title, description, latitude, longitude, address, System.currentTimeMillis(), userId);
+        Report report = new Report(title, description, latitude, longitude, finalAddress, System.currentTimeMillis(), userId);
         viewModel.insert(report);
         
         Toast.makeText(this, R.string.toast_success, Toast.LENGTH_SHORT).show();

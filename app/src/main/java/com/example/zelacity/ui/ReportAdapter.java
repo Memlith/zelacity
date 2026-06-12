@@ -40,11 +40,13 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
         holder.textViewDescription.setText(currentReport.getDescription());
         
         String locationInfo;
-        if (currentReport.getLatitude() != 0.0 || currentReport.getLongitude() != 0.0) {
+        if (currentReport.getAddress() != null && !currentReport.getAddress().isEmpty()) {
+            locationInfo = currentReport.getAddress();
+        } else if (currentReport.getLatitude() != 0.0 || currentReport.getLongitude() != 0.0) {
             locationInfo = context.getString(R.string.location_format, 
                     currentReport.getLatitude(), currentReport.getLongitude());
         } else {
-            locationInfo = context.getString(R.string.label_address, currentReport.getAddress());
+            locationInfo = context.getString(R.string.location_gps_failed);
         }
         holder.textViewLocation.setText(locationInfo);
         
