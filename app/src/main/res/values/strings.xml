@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Zelacity</string>
+    <string name="login_title">Zelacity</string>
+    <string name="login_subtitle">Reporte problemas na sua cidade</string>
+    <string name="hint_title">Título do Problema</string>
+    <string name="hint_description">Descrição</string>
+    <string name="hint_address">Endereço (Caso o GPS falhe)</string>
+    <string name="location_obtaining">Obtendo localização automática...</string>
+    <string name="location_manual">Por favor, informe o endereço manualmente.</string>
+    <string name="btn_save">Registrar Denúncia</string>
+    <string name="desc_add_report">Adicionar Denúncia</string>
+    <string name="toast_fill_fields">Preencha título e descrição</string>
+    <string name="toast_missing_location">Informe a localização ou o endereço</string>
+    <string name="toast_success">Denúncia registrada!</string>
+    <string name="toast_error_google">Falha no login Google</string>
+    <string name="toast_error_firebase">Falha na autenticação Firebase</string>
+    <string name="location_gps_failed">GPS falhou ao obter coordenadas.</string>
+    <string name="status_synced">Sincronizado</string>
+    <string name="status_pending">Pendente</string>
+    <string name="label_address">Endereço: %s</string>
+    <string name="location_format">Lat: %.4f, Lon: %.4f</string>
+    <string name="location_gps_success">Localização GPS capturada: %.4f, %.4f</string>
+    <string name="btn_google_login">Entrar com Google</string>
+    <string name="title_main">Denúncias</string>
+    <string name="title_add_report">Nova Denúncia</string>
+</resources>
