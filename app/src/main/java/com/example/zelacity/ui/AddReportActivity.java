@@ -20,6 +20,8 @@ import com.example.zelacity.model.Report;
 import com.example.zelacity.viewmodel.ReportViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
+import com.google.android.gms.tasks.CancellationTokenSource;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -65,30 +67,37 @@ public class AddReportActivity extends AppCompatActivity {
             return;
         }
 
-        fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
-            if (location != null) {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                hasLocation = true;
+        textViewLocationStatus.setText(R.string.location_obtaining);
 
-                // Tenta obter o endereço automaticamente via Geocoder
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                try {
-                    List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                    if (addresses != null && !addresses.isEmpty()) {
-                        autoAddress = addresses.get(0).getAddressLine(0);
+        fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, new CancellationTokenSource().getToken())
+                .addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
+                        hasLocation = true;
+
+                        // Tenta obter o endereço automaticamente via Geocoder
+                        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+                        try {
+                            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                            if (addresses != null && !addresses.isEmpty()) {
+                                autoAddress = addresses.get(0).getAddressLine(0);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        textViewLocationStatus.setText(getString(R.string.location_gps_success, latitude, longitude));
+                        textInputLayoutAddress.setVisibility(View.GONE);
+                    } else {
+                        textViewLocationStatus.setText(R.string.location_gps_failed);
+                        showAddressInput();
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                textViewLocationStatus.setText(getString(R.string.location_gps_success, latitude, longitude));
-                textInputLayoutAddress.setVisibility(View.GONE);
-            } else {
-                textViewLocationStatus.setText(R.string.location_gps_failed);
-                showAddressInput();
-            }
-        });
+                })
+                .addOnFailureListener(this, e -> {
+                    textViewLocationStatus.setText(R.string.location_gps_failed);
+                    showAddressInput();
+                });
     }
 
     private void showAddressInput() {
